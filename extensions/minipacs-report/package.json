@@ -1,0 +1,16 @@
+{
+  "name": "@minipacs/extension-report",
+  "version": "0.1.0",
+  "description": "Panel de informes médicos para OHIF",
+  "private": true,
+  "module": "src/index.ts",
+  "keywords": [
+    "ohif-extension"
+  ],
+  "peerDependencies": {
+    "@ohif/core": "3.12.17",
+    "@ohif/ui-next": "3.12.17",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  }
+}
