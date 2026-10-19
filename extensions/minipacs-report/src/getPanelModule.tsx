@@ -1,10 +1,9 @@
 import React from 'react';
 import ReportPanel from './panels/ReportPanel';
+import { ReportService } from './services/ReportService';
 
-export default function getPanelModule({
-  servicesManager,
-  commandsManager,
-}) {
+export default function getPanelModule({ servicesManager, extensionManager }) {
+  const reportService = new ReportService(servicesManager, extensionManager);
 
   return [
     {
@@ -12,9 +11,7 @@ export default function getPanelModule({
       iconName: 'clipboard',
       label: 'Informe médico',
 
-      component: () => (
-        <ReportPanel />
-      ),
+      component: () => <ReportPanel reportService={reportService} />,
     },
   ];
 }

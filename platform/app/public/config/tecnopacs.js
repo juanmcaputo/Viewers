@@ -12,6 +12,11 @@ window.config = {
   // ------------------------------------------------------------------
   modesConfiguration: {
     '@ohif/mode-longitudinal': {
+      // Manejador de nuestros informes (TID 2005) PRIMERO: OHIF prueba los
+      // manejadores en orden; los SR que no son nuestros siguen al de OHIF.
+      sopClassHandlers: {
+        $unshift: ['@minipacs/extension-report.sopClassHandlerModule.informe-tid2005'],
+      },
       routes: {
         0: {
           layoutInstance: {
@@ -19,6 +24,17 @@ window.config = {
               rightPanels: {
                 $push: [
                   '@minipacs/extension-report.panelModule.report'
+                ],
+              },
+              // Visor propio (en castellano) para los informes TID 2005
+              viewports: {
+                $push: [
+                  {
+                    namespace: '@minipacs/extension-report.viewportModule.informe-tid2005',
+                    displaySetsToDisplay: [
+                      '@minipacs/extension-report.sopClassHandlerModule.informe-tid2005',
+                    ],
+                  },
                 ],
               },
             },
