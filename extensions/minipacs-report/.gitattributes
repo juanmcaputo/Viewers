@@ -1,0 +1,3 @@
+# Modelos y motor de la transcripcion local: binarios, que git no les toque los finales de linea
+*.onnx binary
+*.wasm binary

@@ -190,6 +190,20 @@ module.exports = (env, argv, { SRC_DIR, ENTRY }) => {
           test: /\.(woff|woff2|eot|ttf|otf)$/i,
           type: 'asset/resource',
         },
+        // MiniPACS (dictado por voz, extensions/minipacs-report): Transformers.js
+        // necesita SU ONNX Runtime Web 1.22, que yarn deja dentro de
+        // node_modules/@huggingface/transformers/node_modules. OHIF (cornerstone) usa
+        // el 1.17.1 de la raiz y resolve.modules (abajo) busca primero en la raiz: sin
+        // esta regla Transformers recibia el 1.17.1, que pide otros .wasm
+        // ("both async and sync fetching of the wasm failed"). Para los archivos de
+        // Transformers los imports se resuelven como en Node (node_modules hacia
+        // arriba); el resto de OHIF no cambia.
+        {
+          test: /[\\/]node_modules[\\/]@huggingface[\\/]transformers[\\/]/,
+          resolve: {
+            modules: ['node_modules'],
+          },
+        },
       ], //.concat(vtkRules),
     },
     resolve: {

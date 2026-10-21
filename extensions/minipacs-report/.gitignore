@@ -1,0 +1,7 @@
+# Modelos de Whisper para placa de video con archivos de mas de 100 MB (limite de
+# GitHub): no se versionan. En cada servidor los baja y verifica instalar-modelos.js.
+public/minipacs/models/onnx-community/whisper-base/
+public/minipacs/models/minipacs/whisper-base-es/
+public/minipacs/models/minipacs/whisper-base-es-hitz/
+public/minipacs/models/onnx-community/whisper-small/
+public/minipacs/models/onnx-community/whisper-large-v3-turbo/

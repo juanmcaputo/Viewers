@@ -1,0 +1,69 @@
+# Archivos servidos por OHIF en /minipacs/ (transcripcion local en el navegador).
+# Generado 2026-10-20T13:03:52.395Z por instalar-modelos.js. Formato: sha256  tamano  archivo  <-  origen
+#
+# onnx-community/whisper-tiny @ commit ff4177021cc41f7db950912b73ea4fdf7d01d8e7 (licencia: ?)
+46aeea0a406afbeb563fc8e59ca10609203df4299af6a83f73752fef369efd2d       2243  models/onnx-community/whisper-tiny/config.json  <-  https://huggingface.co/onnx-community/whisper-tiny/resolve/ff4177021cc41f7db950912b73ea4fdf7d01d8e7/config.json
+f5c67e5a4f7102f8cb4d058bc95da276bbc19eeec997267c3bb0f25ef68facd1       3772  models/onnx-community/whisper-tiny/generation_config.json  <-  https://huggingface.co/onnx-community/whisper-tiny/resolve/ff4177021cc41f7db950912b73ea4fdf7d01d8e7/generation_config.json
+a6a76d28c93edb273669eb9e0b0636a2bddbb1272c3261e47b7ca6dfdbac1b8d        339  models/onnx-community/whisper-tiny/preprocessor_config.json  <-  https://huggingface.co/onnx-community/whisper-tiny/resolve/ff4177021cc41f7db950912b73ea4fdf7d01d8e7/preprocessor_config.json
+27fc476bfe7f17299480be2273fc0608e4d5a99aba2ab5dec5374b4482d1a566    2480466  models/onnx-community/whisper-tiny/tokenizer.json  <-  https://huggingface.co/onnx-community/whisper-tiny/resolve/ff4177021cc41f7db950912b73ea4fdf7d01d8e7/tokenizer.json
+2a4c4281cf9f51ac6ccc406fdc711a087afe6530f671fa7b80953edc498275ce     282683  models/onnx-community/whisper-tiny/tokenizer_config.json  <-  https://huggingface.co/onnx-community/whisper-tiny/resolve/ff4177021cc41f7db950912b73ea4fdf7d01d8e7/tokenizer_config.json
+2af4a414ca47aa30f61246017e5fe82b0a8d229281d1255ba666a2a7f6b84d19   10124990  models/onnx-community/whisper-tiny/onnx/encoder_model_quantized.onnx  <-  https://huggingface.co/onnx-community/whisper-tiny/resolve/ff4177021cc41f7db950912b73ea4fdf7d01d8e7/onnx/encoder_model_quantized.onnx
+25e807a962b6349356d0ea5d0dfe530b7e5bf0e2a484aeca0359d03143faddd3   30719241  models/onnx-community/whisper-tiny/onnx/decoder_model_merged_quantized.onnx  <-  https://huggingface.co/onnx-community/whisper-tiny/resolve/ff4177021cc41f7db950912b73ea4fdf7d01d8e7/onnx/decoder_model_merged_quantized.onnx
+6642befb640f950d4a8cbbd17834d59e7e75f575b81ccf213e06b050623ab1dd   32904992  models/onnx-community/whisper-tiny/onnx/encoder_model.onnx  <-  https://huggingface.co/onnx-community/whisper-tiny/resolve/ff4177021cc41f7db950912b73ea4fdf7d01d8e7/onnx/encoder_model.onnx
+a7573efde84f7d018d59e50e7f860c03e26623d68e23eb6037b76135367e72eb   86713702  models/onnx-community/whisper-tiny/onnx/decoder_model_merged_q4.onnx  <-  https://huggingface.co/onnx-community/whisper-tiny/resolve/ff4177021cc41f7db950912b73ea4fdf7d01d8e7/onnx/decoder_model_merged_q4.onnx
+#
+# onnx-community/whisper-base @ commit 1846881b6b3a3024392c1eea3ad983695bc23925 (licencia: ?)
+f4d0608f7d918166da7edb3e188de5ef1bfe70d9802e785d271fd88111e9cf4b       2243  models/onnx-community/whisper-base/config.json  <-  https://huggingface.co/onnx-community/whisper-base/resolve/1846881b6b3a3024392c1eea3ad983695bc23925/config.json
+61070cf8de25b1e9256e8e102ded49d8d24a8369ed36ef84fdf21549e68125a0       3832  models/onnx-community/whisper-base/generation_config.json  <-  https://huggingface.co/onnx-community/whisper-base/resolve/1846881b6b3a3024392c1eea3ad983695bc23925/generation_config.json
+a6a76d28c93edb273669eb9e0b0636a2bddbb1272c3261e47b7ca6dfdbac1b8d        339  models/onnx-community/whisper-base/preprocessor_config.json  <-  https://huggingface.co/onnx-community/whisper-base/resolve/1846881b6b3a3024392c1eea3ad983695bc23925/preprocessor_config.json
+27fc476bfe7f17299480be2273fc0608e4d5a99aba2ab5dec5374b4482d1a566    2480466  models/onnx-community/whisper-base/tokenizer.json  <-  https://huggingface.co/onnx-community/whisper-base/resolve/1846881b6b3a3024392c1eea3ad983695bc23925/tokenizer.json
+2e036e4dbacfdeb7242c7d4ec4149f4a16e86026048f94d1637e3a8ee9c6a573     282682  models/onnx-community/whisper-base/tokenizer_config.json  <-  https://huggingface.co/onnx-community/whisper-base/resolve/1846881b6b3a3024392c1eea3ad983695bc23925/tokenizer_config.json
+a9f3b752833b49e880dec91ee5b6d936112be7c3ea07c221024ba493439f46fe   82468078  models/onnx-community/whisper-base/onnx/encoder_model.onnx  <-  https://huggingface.co/onnx-community/whisper-base/resolve/1846881b6b3a3024392c1eea3ad983695bc23925/onnx/encoder_model.onnx
+ffba51b20185377c1b89362b1128148d0132de936a32b200af973da2a11a5369   41332612  models/onnx-community/whisper-base/onnx/encoder_model_fp16.onnx  <-  https://huggingface.co/onnx-community/whisper-base/resolve/1846881b6b3a3024392c1eea3ad983695bc23925/onnx/encoder_model_fp16.onnx
+09f83b71ceedc97dab1d90b914715dc532a646a147abda11d83c64867b7c319c  123602419  models/onnx-community/whisper-base/onnx/decoder_model_merged_q4.onnx  <-  https://huggingface.co/onnx-community/whisper-base/resolve/1846881b6b3a3024392c1eea3ad983695bc23925/onnx/decoder_model_merged_q4.onnx
+#
+# onnx-community/whisper-small @ commit 36050c46d777d46dc4b5f43f6d90574fc38f8732 (licencia: ?)
+457854d452f17661e197d74aee12b8e74fb75ba30ebfaa7426d0d61ea1e08a18       2227  models/onnx-community/whisper-small/config.json  <-  https://huggingface.co/onnx-community/whisper-small/resolve/36050c46d777d46dc4b5f43f6d90574fc38f8732/config.json
+f538b28220c6a6d6f1af1458d4141cacb4ef4963df3de98a19490440c412ddf0       3893  models/onnx-community/whisper-small/generation_config.json  <-  https://huggingface.co/onnx-community/whisper-small/resolve/36050c46d777d46dc4b5f43f6d90574fc38f8732/generation_config.json
+a6a76d28c93edb273669eb9e0b0636a2bddbb1272c3261e47b7ca6dfdbac1b8d        339  models/onnx-community/whisper-small/preprocessor_config.json  <-  https://huggingface.co/onnx-community/whisper-small/resolve/36050c46d777d46dc4b5f43f6d90574fc38f8732/preprocessor_config.json
+27fc476bfe7f17299480be2273fc0608e4d5a99aba2ab5dec5374b4482d1a566    2480466  models/onnx-community/whisper-small/tokenizer.json  <-  https://huggingface.co/onnx-community/whisper-small/resolve/36050c46d777d46dc4b5f43f6d90574fc38f8732/tokenizer.json
+2a4c4281cf9f51ac6ccc406fdc711a087afe6530f671fa7b80953edc498275ce     282683  models/onnx-community/whisper-small/tokenizer_config.json  <-  https://huggingface.co/onnx-community/whisper-small/resolve/36050c46d777d46dc4b5f43f6d90574fc38f8732/tokenizer_config.json
+5549cd8666ff4b694ceb128bfa48b95bdcceec29075cf2c2212f90002cc058de  176607756  models/onnx-community/whisper-small/onnx/encoder_model_fp16.onnx  <-  https://huggingface.co/onnx-community/whisper-small/resolve/36050c46d777d46dc4b5f43f6d90574fc38f8732/onnx/encoder_model_fp16.onnx
+795c61b344576719c2b249cc9911c78b4cc552c8c6a5407be21a3380a0791b13  233149327  models/onnx-community/whisper-small/onnx/decoder_model_merged_q4.onnx  <-  https://huggingface.co/onnx-community/whisper-small/resolve/36050c46d777d46dc4b5f43f6d90574fc38f8732/onnx/decoder_model_merged_q4.onnx
+#
+# onnx-community/whisper-large-v3-turbo @ commit 360ebcde2559d60bb474678be3c1de9ef347d01a (licencia: ?)
+35cd83669f75bc2867f3b3a4461850392d5e308cd6ea951c3700539883c28df1       1332  models/onnx-community/whisper-large-v3-turbo/config.json  <-  https://huggingface.co/onnx-community/whisper-large-v3-turbo/resolve/360ebcde2559d60bb474678be3c1de9ef347d01a/config.json
+16f95291d2f47c944d3c2b19390bba7965666555c1ea2a0bdc850d1fab45612f       3897  models/onnx-community/whisper-large-v3-turbo/generation_config.json  <-  https://huggingface.co/onnx-community/whisper-large-v3-turbo/resolve/360ebcde2559d60bb474678be3c1de9ef347d01a/generation_config.json
+7ccc62c6f2765af1f3b46c00c9b5894426835a05021c8b9c01eecb6dfb542711        340  models/onnx-community/whisper-large-v3-turbo/preprocessor_config.json  <-  https://huggingface.co/onnx-community/whisper-large-v3-turbo/resolve/360ebcde2559d60bb474678be3c1de9ef347d01a/preprocessor_config.json
+6d8cbd7cd0d8d5815e478dac67b85a26bbe77c1f5e0c6d76d1ce2abc0e5f21ca    2480617  models/onnx-community/whisper-large-v3-turbo/tokenizer.json  <-  https://huggingface.co/onnx-community/whisper-large-v3-turbo/resolve/360ebcde2559d60bb474678be3c1de9ef347d01a/tokenizer.json
+844b642c73a91359722f47b35705f7174686df33d252695d8572cf9ac03a6389     282843  models/onnx-community/whisper-large-v3-turbo/tokenizer_config.json  <-  https://huggingface.co/onnx-community/whisper-large-v3-turbo/resolve/360ebcde2559d60bb474678be3c1de9ef347d01a/tokenizer_config.json
+aafd3383f1aa372db0825a885730ebbbae7e34871ec0460428663c69641a63d0  369974078  models/onnx-community/whisper-large-v3-turbo/onnx/encoder_model_q4f16.onnx  <-  https://huggingface.co/onnx-community/whisper-large-v3-turbo/resolve/360ebcde2559d60bb474678be3c1de9ef347d01a/onnx/encoder_model_q4f16.onnx
+45981cdd958a4c8e1447839850d2e6e27e30974ccbe31b4a1e5ebe9ad8965a5f  193505017  models/onnx-community/whisper-large-v3-turbo/onnx/decoder_model_merged_q4f16.onnx  <-  https://huggingface.co/onnx-community/whisper-large-v3-turbo/resolve/360ebcde2559d60bb474678be3c1de9ef347d01a/onnx/decoder_model_merged_q4f16.onnx
+#
+# onnx-community/silero-vad @ commit e71cae966052b992a7eca6b17738916ce0eca4ec (licencia: mit)
+a4a068cd6cf1ea8355b84327595838ca748ec29a25bc91fc82e6c299ccdc5808    2243022  models/onnx-community/silero-vad/onnx/model.onnx  <-  https://huggingface.co/onnx-community/silero-vad/resolve/e71cae966052b992a7eca6b17738916ce0eca4ec/onnx/model.onnx
+2e63e9a38b6e8fc0c7bc37ce174caca1862870856c6daf5697cfb785e925520b       1075  models/onnx-community/silero-vad/LICENSE  <-  https://huggingface.co/onnx-community/silero-vad/resolve/e71cae966052b992a7eca6b17738916ce0eca4ec/LICENSE
+#
+# onnxruntime-web 1.22.0-dev.20250409-89f8206ba4 (dependencia de @huggingface/transformers 3.8.1; licencia MIT)
+43c25054b6b9ac000f786c65545ff83a45f871e0e310e8c2f4d48a363bb66db4      20856  ort/ort-wasm-simd-threaded.mjs  <-  node_modules/@huggingface/transformers/node_modules/onnxruntime-web/dist/ort-wasm-simd-threaded.mjs
+f061472c6e77d6d50d079aacdc0ff9b63fee287ddd2cbf46cf62438d3891de2b   11133407  ort/ort-wasm-simd-threaded.wasm  <-  node_modules/@huggingface/transformers/node_modules/onnxruntime-web/dist/ort-wasm-simd-threaded.wasm
+08fb86ec433c78bfb032c5d84a68b8e8e5a8d81268fa39e24314179a5767a5b9      44484  ort/ort-wasm-simd-threaded.jsep.mjs  <-  node_modules/@huggingface/transformers/node_modules/onnxruntime-web/dist/ort-wasm-simd-threaded.jsep.mjs
+c46655e8a94afc45338d4cb2b840475f88e5012d524509916e505079c00bfa39   21596019  ort/ort-wasm-simd-threaded.jsep.wasm  <-  node_modules/@huggingface/transformers/node_modules/onnxruntime-web/dist/ort-wasm-simd-threaded.jsep.wasm
+# minipacs/whisper-base-es: conversion propia (Transformers.js 3.8.1 scripts/convert.py + quantize.py q4)
+# origen: https://huggingface.co/deepdml/whisper-base-es-mix-norm commit c8634fa3234b8a226b52b48b19ee7987f3653ef2 (Apache-2.0); tokenizador de openai/whisper-base
+c30325e5f4bc16e602cfed7567ebe1df4f160c2a205969d29d18c06c08e3d4c2  1484  minipacs/whisper-base-es/config.json
+07e913d83bc999598f5e3b981988ffcef2fdca6006d03bef465cb7a2c5e48313  4045  minipacs/whisper-base-es/generation_config.json
+027dc034c8e8b6030d24daa91c5e281592827d4e275ef17c2b14e1458f9d41f2  123527386  minipacs/whisper-base-es/onnx/decoder_model_merged_q4.onnx
+fb1ded15ffd876429bfb07a05100cfc305532781bb579575ecb23bbe821dc8f3  82435426  minipacs/whisper-base-es/onnx/encoder_model.onnx
+86c752c0f26ae2cc92699a1805eb66366b01c9260b7d31c7bd142d6b9e56017a  353  minipacs/whisper-base-es/preprocessor_config.json
+27fc476bfe7f17299480be2273fc0608e4d5a99aba2ab5dec5374b4482d1a566  2480466  minipacs/whisper-base-es/tokenizer.json  <-  copia de onnx-community/whisper-base/tokenizer.json
+2e036e4dbacfdeb7242c7d4ec4149f4a16e86026048f94d1637e3a8ee9c6a573  282682  minipacs/whisper-base-es/tokenizer_config.json  <-  copia de onnx-community/whisper-base/tokenizer_config.json
+# minipacs/whisper-base-es-hitz: conversion propia (Transformers.js 3.8.1 convert.py + quantize.py q4)
+# origen: https://huggingface.co/HiTZ/whisper-base-es commit eb14b9cc41b40b3fd44e556eea1a7249f1fb2063 (Apache-2.0); tokenizador de onnx-community/whisper-base
+d305420f307844a189dd85a832e68d93fe80f4891030eba427c662082f07d13a  1357  minipacs/whisper-base-es-hitz/config.json
+6c554e53c6a6d0d8d6419758be17066e77298b8b8409fbd1073e24a98fc57ace  4057  minipacs/whisper-base-es-hitz/generation_config.json
+d983a3d50a8054c2b377a42e065ac195c8ff85a5e17e24bc77b9b58bf2d53d82  123527386  minipacs/whisper-base-es-hitz/onnx/decoder_model_merged_q4.onnx
+8c72c6a08b2cb907c4f12cb367ac161dd0ad25769db2318443d9a3ac9c89e7c5  82435426  minipacs/whisper-base-es-hitz/onnx/encoder_model.onnx
+86c752c0f26ae2cc92699a1805eb66366b01c9260b7d31c7bd142d6b9e56017a  353  minipacs/whisper-base-es-hitz/preprocessor_config.json
+27fc476bfe7f17299480be2273fc0608e4d5a99aba2ab5dec5374b4482d1a566  2480466  minipacs/whisper-base-es-hitz/tokenizer.json
+2e036e4dbacfdeb7242c7d4ec4149f4a16e86026048f94d1637e3a8ee9c6a573  282682  minipacs/whisper-base-es-hitz/tokenizer_config.json
