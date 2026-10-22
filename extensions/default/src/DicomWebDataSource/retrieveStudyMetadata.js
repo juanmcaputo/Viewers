@@ -85,7 +85,13 @@ export function retrieveStudyMetadata(
  * @param {String} StudyInstanceUID The UID of the Study to be removed from cache
  */
 export function deleteStudyMetadataPromise(StudyInstanceUID) {
-  if (StudyMetaDataPromises.has(StudyInstanceUID)) {
-    StudyMetaDataPromises.delete(StudyInstanceUID);
+  // Las promesas se guardan con la clave `${dicomWebConfig.name}:${StudyInstanceUID}`
+  // (ver retrieveStudyMetadata): borrar solo por StudyInstanceUID nunca encontraba
+  // nada y al reabrir el estudio en la misma sesion OHIF reusaba la lista de series
+  // vieja, sin las series agregadas por STOW-RS (informe SR, PDF adjunto).
+  for (const key of [...StudyMetaDataPromises.keys()]) {
+    if (key === StudyInstanceUID || key.endsWith(`:${StudyInstanceUID}`)) {
+      StudyMetaDataPromises.delete(key);
+    }
   }
 }

@@ -72,6 +72,10 @@ export class DictadoNavegador {
   private activo = false;
   private pista: MediaStreamTrack | undefined;
   private frases = 0;
+  private provisorio = ''; // ultimo texto en gris todavia sin confirmar
+  private alTerminar: (() => void) | null = null;
+  // Se cumple cuando el reconocedor termino del todo (ya entrego la ultima frase)
+  readonly terminado = new Promise<void>(resolver => (this.alTerminar = resolver));
 
   constructor(
     private readonly onParcial: (texto: string) => void, // provisorio -> gris
@@ -94,23 +98,32 @@ export class DictadoNavegador {
     rec.continuous = true;
     rec.interimResults = true;
 
+    // Se recorren TODOS los resultados de esta sesion y se cuentan los finales ya
+    // entregados: no se depende de resultIndex (Chrome puede informar el indice de
+    // la frase nueva en el mismo evento en que confirma la anterior, y esa
+    // confirmacion se perderia).
+    let entregados = 0;
     rec.onresult = (evento: any) => {
       let parcial = '';
-      for (let i = evento.resultIndex; i < evento.results.length; i++) {
-        const texto = evento.results[i][0].transcript;
-        if (evento.results[i].isFinal) {
-          const frase = darFormato(texto);
-          if (frase) {
-            this.frases++;
-            registro(`dictado del navegador: frase ${this.frases} (${frase.length} caracteres)`);
-            this.onFrase(frase);
+      for (let i = 0; i < evento.results.length; i++) {
+        const resultado = evento.results[i];
+        if (resultado.isFinal) {
+          if (i >= entregados) {
+            entregados = i + 1;
+            const frase = darFormato(resultado[0].transcript);
+            if (frase) {
+              this.frases++;
+              registro(`dictado del navegador: frase ${this.frases} (${frase.length} caracteres)`);
+              this.onFrase(frase);
+            }
           }
         } else {
-          parcial += texto;
+          parcial += resultado[0].transcript;
         }
       }
-      if (parcial.trim()) {
-        this.onParcial(parcial.trim());
+      this.provisorio = parcial.trim();
+      if (this.provisorio) {
+        this.onParcial(this.provisorio);
       }
     };
 
@@ -127,12 +140,22 @@ export class DictadoNavegador {
     // Chrome cierra la sesion tras un rato de silencio: con el microfono y
     // mientras se siga grabando, se vuelve a abrir sola
     rec.onend = () => {
+      // Si la sesion termino con texto en gris sin confirmar, se confirma igual:
+      // que no se pierda lo ultimo dicho
+      if (this.provisorio) {
+        const frase = darFormato(this.provisorio);
+        this.provisorio = '';
+        this.frases++;
+        registro(`dictado del navegador: frase ${this.frases} confirmada al cerrar (${frase.length} caracteres)`);
+        this.onFrase(frase);
+      }
       if (this.activo && !this.pista) {
         this.arrancar();
         return;
       }
       this.activo = false;
       this.onFin();
+      this.alTerminar?.();
     };
 
     if (this.pista) {
@@ -172,8 +195,11 @@ export async function dictarArchivo(archivo: Blob, dictado: DictadoNavegador, vi
     fuente.start();
     await terminado;
     if (vigente()) {
-      await new Promise(resolver => setTimeout(resolver, 1500)); // deja confirmar la ultima frase
+      await new Promise(resolver => setTimeout(resolver, 1500)); // silencio final: cierra la ultima frase
       dictado.stop();
+      // El audio se cierra recien cuando el reconocedor termino de entregar todo
+      // (si se cierra antes, la ultima frase confirmada se pierde). Maximo 10 s.
+      await Promise.race([dictado.terminado, new Promise(resolver => setTimeout(resolver, 10000))]);
     }
   } finally {
     await contexto.close().catch(() => undefined);

@@ -64,6 +64,9 @@ export default function ReportPanel({ reportService }) {
   // El error tal cual lo dio el navegador o la libreria (para diagnostico)
   const [detalleAudio, setDetalleAudio] = useState<string | null>(null);
   const inputMp3Ref = useRef<HTMLInputElement>(null);
+  // Adjuntar PDF: se guarda como documento DICOM en el estudio abierto
+  const inputPdfRef = useRef<HTMLInputElement>(null);
+  const [adjuntando, setAdjuntando] = useState(false);
   const editorRef = useRef<HTMLTextAreaElement>(null);
   // Dictado en vivo: microfono -> deteccion de voz -> frases -> Whisper
   const micRef = useRef<MicEnVivo | null>(null);
@@ -170,6 +173,29 @@ export default function ReportPanel({ reportService }) {
       setEnviando(false);
     }
   };
+
+  // Adjuntar PDF: abre el selector del equipo y lo manda al PACS como serie nueva
+  async function onSeleccionarPdf(event: React.ChangeEvent<HTMLInputElement>) {
+    const archivo = event.target.files?.[0];
+    event.target.value = ''; // permite elegir el mismo PDF de nuevo
+    if (!archivo) {
+      return;
+    }
+    if (!archivo.name.toLowerCase().endsWith('.pdf')) {
+      setMensaje({ tipo: 'error', texto: 'Seleccione un archivo .pdf' });
+      return;
+    }
+    setAdjuntando(true);
+    setMensaje(null);
+    try {
+      await reportService.adjuntarPdf(archivo);
+      setMensaje({ tipo: 'ok', texto: `PDF "${archivo.name}" adjuntado al estudio.` });
+    } catch (error) {
+      setMensaje({ tipo: 'error', texto: error?.message || 'No se pudo adjuntar el PDF.' });
+    } finally {
+      setAdjuntando(false);
+    }
+  }
 
   // Un solo camino para el microfono y el MP3: los dos llegan aca con su audio.
   // decodificar -> detectar voz (Silero, sin silencios) -> transcribir cada tramo
@@ -454,8 +480,10 @@ export default function ReportPanel({ reportService }) {
     <div className="flex h-full flex-col gap-3 p-4">
       <h3 className="text-foreground text-lg">Informe médico</h3>
 
-      <div className="flex gap-2">
+      {/* Los botones pasan a la linea de abajo si el panel es angosto */}
+      <div className="flex flex-wrap gap-2">
         <Button
+          className="shrink-0 whitespace-nowrap"
           variant={grabando ? 'default' : 'secondary'}
           onClick={onClickMicrofono}
           disabled={procesando || enviando || (preparando && !grabando)}
@@ -464,6 +492,7 @@ export default function ReportPanel({ reportService }) {
           {grabando ? '■ Detener grabación' : '🎤 Grabar voz'}
         </Button>
         <Button
+          className="shrink-0 whitespace-nowrap"
           variant="secondary"
           onClick={() => inputMp3Ref.current?.click()}
           disabled={grabando || procesando || enviando || pendientes > 0 || preparando}
@@ -475,6 +504,21 @@ export default function ReportPanel({ reportService }) {
           type="file"
           accept=".mp3,audio/mpeg"
           onChange={onSeleccionarMp3}
+          className="hidden"
+        />
+        <Button
+          className="shrink-0 whitespace-nowrap"
+          variant="secondary"
+          onClick={() => inputPdfRef.current?.click()}
+          disabled={grabando || procesando || enviando || adjuntando}
+        >
+          {adjuntando ? 'Adjuntando...' : '📎 Adjuntar PDF'}
+        </Button>
+        <input
+          ref={inputPdfRef}
+          type="file"
+          accept=".pdf,application/pdf"
+          onChange={onSeleccionarPdf}
           className="hidden"
         />
       </div>
@@ -549,14 +593,14 @@ export default function ReportPanel({ reportService }) {
         <Button
           variant="secondary"
           onClick={cancelar}
-          disabled={enviando || grabando || procesando || pendientes > 0}
+          disabled={enviando || adjuntando || grabando || procesando || pendientes > 0}
         >
           Cancelar
         </Button>
         <Button
           variant="default"
           onClick={guardarYEnviar}
-          disabled={enviando || grabando || procesando || pendientes > 0 || !texto.trim()}
+          disabled={enviando || adjuntando || grabando || procesando || pendientes > 0 || !texto.trim()}
         >
           {enviando ? 'Enviando...' : 'Guardar y enviar'}
         </Button>

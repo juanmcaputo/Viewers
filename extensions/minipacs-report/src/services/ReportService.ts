@@ -1,6 +1,7 @@
 import dcmjs from 'dcmjs';
 import { DicomMetadataStore } from '@ohif/core';
 import { generarTID2005 } from '../dicom/generarTID2005';
+import { generarPdfEncapsulado } from '../dicom/generarPdfEncapsulado';
 import { estudioActivo, datosDelEstudio } from './datosDelEstudio';
 
 const { naturalizeDataset, denaturalizeDataset } = dcmjs.data.DicomMetaDictionary;
@@ -19,6 +20,24 @@ export class ReportService {
       medicoAutor: this.medicoAutor(),
     });
 
+    await this.enviarYRefrescar(dataset, StudyInstanceUID);
+    return dataset.SOPInstanceUID;
+  }
+
+  // Adjuntar PDF: lo guarda como DICOM Encapsulated PDF en el estudio abierto
+  async adjuntarPdf(archivo: File, titulo?: string): Promise<string> {
+    const StudyInstanceUID = estudioActivo(this.servicesManager);
+    const dataset = await generarPdfEncapsulado(
+      archivo,
+      datosDelEstudio(StudyInstanceUID),
+      titulo
+    );
+    await this.enviarYRefrescar(dataset, StudyInstanceUID);
+    return dataset.SOPInstanceUID;
+  }
+
+  // Envia el dataset al PACS y actualiza el estudio en OHIF
+  private async enviarYRefrescar(dataset, StudyInstanceUID: string): Promise<void> {
     const [dataSource] = this.extensionManager.getActiveDataSource();
     await dataSource.store.dicom(dataset); // STOW-RS a dcm4chee
 
@@ -28,8 +47,6 @@ export class ReportService {
     dataSource.deleteStudyMetadataPromise(StudyInstanceUID);
     const { _meta, ...sinMeta } = dataset;
     DicomMetadataStore.addInstances([naturalizeDataset(denaturalizeDataset(sinMeta))], true);
-
-    return dataset.SOPInstanceUID;
   }
 
   // El usuario logueado en Keycloak (lo guarda OHIF al iniciar sesion)
