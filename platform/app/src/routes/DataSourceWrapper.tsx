@@ -228,7 +228,10 @@ function DataSourceWrapper(props: withAppTypes) {
       dataPath={dataSourcePath}
       dataTotal={data.total}
       dataSource={dataSource}
-      isLoadingData={isLoading}
+      // Mientras no hubo ninguna consulta (data es DEFAULT_DATA: su location es un string)
+      // tambien es 'cargando': antes de iniciar el data source isLoading es false y la
+      // WorkList mostraria 'No studies' hasta que arranque la consulta.
+      isLoadingData={isLoading || typeof data.location === 'string'}
       // To refresh the data, simply reset it to DEFAULT_DATA which invalidates it and triggers a new query to fetch the data.
       onRefresh={() => setData(DEFAULT_DATA)}
     />

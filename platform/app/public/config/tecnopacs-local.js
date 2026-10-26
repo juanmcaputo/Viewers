@@ -8,6 +8,9 @@ window.config = {
   extensions: [],
   modes: [],
   showStudyList: true,
+  // Mientras se consulta la lista se muestra el indicador de carga y no el
+  // cartel "No studies" (que queda solo para consulta terminada y vacia).
+  showLoadingIndicator: true,
 
   // ------------------------------------------------------------------
   // Panel de informe (extension @minipacs/extension-report) en el modo

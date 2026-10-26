@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route, Link, useNavigate } from 'react-router-dom';
-import { ErrorBoundary } from '@ohif/ui-next';
+import { ErrorBoundary, LoadingIndicatorProgress } from '@ohif/ui-next';
 
 // Route Components
 import DataSourceWrapper from './DataSourceWrapper';
@@ -79,6 +79,27 @@ const bakedInRoutes = [
   },
 ];
 
+// Ruta de retorno de OIDC (/callback). La procesa OpenIdConnectRoutes (CallbackPage),
+// pero al renderizarse tambien estas rutas caia en el 404 ('*') durante el intercambio
+// del token, y se veia 'Error (404)' un instante antes de la lista. Aca se muestra
+// el indicador de carga hasta que CallbackPage navega a la pagina de destino.
+const OidcCallbackLoading = () => (
+  <div className="absolute flex h-full w-full items-center justify-center bg-black">
+    <LoadingIndicatorProgress className="h-full w-full bg-black" />
+  </div>
+);
+
+const _getOidcCallbackPath = () => {
+  const oidc = window.config?.oidc;
+  if (!oidc?.length) {
+    return null;
+  }
+  const redirectUri = oidc[0].redirect_uri || '/callback';
+  const pathname = new URL(redirectUri, window.location.origin).pathname;
+  const basename = routerBasename.endsWith('/') ? routerBasename.slice(0, -1) : routerBasename;
+  return basename ? pathname.replace(basename, '') : pathname;
+};
+
 // NOT FOUND (404)
 const notFoundRoute = { path: '*', children: NotFound };
 
@@ -119,11 +140,14 @@ const createRoutes = ({
 
   const customRoutes = customizationService.getCustomization('routes.customRoutes');
 
+  const oidcCallbackPath = _getOidcCallbackPath();
+
   const allRoutes = [
     ...routes,
     ...(showStudyList ? [WorkListRoute] : []),
     ...(customRoutes?.routes || []),
     ...bakedInRoutes,
+    ...(oidcCallbackPath ? [{ path: oidcCallbackPath, children: OidcCallbackLoading }] : []),
     customRoutes?.notFoundRoute || notFoundRoute,
   ];
 
