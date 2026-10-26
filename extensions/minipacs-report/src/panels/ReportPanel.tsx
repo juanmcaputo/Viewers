@@ -3,12 +3,13 @@ import { Button } from '@ohif/ui-next';
 import { MicEnVivo } from '../services/MicEnVivo';
 import { DetectorVozEnVivo } from '../services/DetectorVozEnVivo';
 import { decodificarAudio } from '../services/AudioDecoder';
-import { detectarSegmentosDeVoz } from '../services/DetectorVoz';
+import { detectarSegmentosDeVoz, obtenerModelo as obtenerSilero } from '../services/DetectorVoz';
 import { transcribirAudio, precargarModelo, suscribirEstado, EstadoDictado } from '../services/SpeechTranscriber';
 import {
   DictadoNavegador,
   dictarArchivo,
   estadoDictadoNavegador,
+  instalacionEnCurso,
   prepararDictadoNavegador,
 } from '../services/DictadoNavegador';
 import { registro, fallo, detalleDeError } from '../services/registroVoz';
@@ -84,18 +85,29 @@ export default function ReportPanel({ reportService }) {
   // sin modo local); null = averiguando. Ver index.ts y DictadoNavegador.ts
   const [motor, setMotor] = useState<'navegador' | 'whisper' | null>(null);
   const motorRef = useRef<'navegador' | 'whisper' | null>(null);
-  const instalableRef = useRef(false); // Chrome lo tiene pero falto instalar (se reintenta con el clic)
+  // Chrome tiene el modo local pero falta instalar el castellano: se instala con el
+  // clic del medico (Grabar voz / Cargar MP3) y Whisper NO se carga mientras tanto
+  const instalableRef = useRef(false);
+  const [instalable, setInstalable] = useState(false);
+  const instalacionRef = useRef<Promise<boolean> | null>(null); // la que arranco el clic en Cargar MP3
   const dictadoNavRef = useRef<DictadoNavegador | null>(null);
-  // Preparacion de Whisper (empieza al iniciar OHIF, ver index.ts)
+  // Preparacion de Whisper (empieza al abrir este panel si hace falta, ver index.ts)
   const [dictado, setDictado] = useState<EstadoDictado | null>(null);
+  // "demorado": precalentando hace mas de 20 s, se deja dictar igual (SpeechTranscriber.ts)
   const preparando =
-    motor === null || (motor === 'whisper' && (dictado?.fase === 'cargando' || dictado?.fase === 'precalentando'));
+    motor === null ||
+    (motor === 'whisper' && !dictado?.demorado && (dictado?.fase === 'cargando' || dictado?.fase === 'precalentando'));
 
-  function usarMotor(nuevo: 'navegador' | 'whisper') {
+  // Whisper se carga recien aca (no al iniciar OHIF: competia con las imagenes del
+  // visor). Con "esperarClic" (Chrome con modo local por instalar) no se carga.
+  function usarMotor(nuevo: 'navegador' | 'whisper', esperarClic = false) {
     motorRef.current = nuevo;
     setMotor(nuevo);
-    if (nuevo === 'whisper') {
-      precargarModelo(); // por si no arranco al iniciar OHIF (o fallo antes)
+    if (nuevo === 'whisper' && !esperarClic) {
+      precargarModelo();
+      // Silero (deteccion de voz) corre en la pagina: cuando el navegador esta libre
+      const cuandoEsteLibre = (window as any).requestIdleCallback || ((tarea: () => void) => setTimeout(tarea, 3000));
+      cuandoEsteLibre(() => obtenerSilero().catch(() => undefined), { timeout: 15000 });
     }
   }
   const procesandoRef = useRef(false);
@@ -129,7 +141,16 @@ export default function ReportPanel({ reportService }) {
         return;
       }
       instalableRef.current = estado === 'downloadable' || estado === 'downloading';
-      usarMotor(estado === 'available' ? 'navegador' : 'whisper');
+      setInstalable(instalableRef.current);
+      usarMotor(estado === 'available' ? 'navegador' : 'whisper', instalableRef.current);
+      // Si index.ts ya esta instalando el castellano, al terminar se pasa al navegador
+      instalacionEnCurso()?.then(ok => {
+        if (ok && !cerrado && motorRef.current === 'whisper') {
+          instalableRef.current = false;
+          setInstalable(false);
+          usarMotor('navegador');
+        }
+      });
     });
     return () => {
       cerrado = true;
@@ -261,6 +282,23 @@ export default function ReportPanel({ reportService }) {
     }
   }
 
+  // Termino de instalar el castellano del navegador: se pasa a ese motor; si fallo,
+  // recien ahora se carga Whisper
+  function terminoInstalacion(listo: boolean) {
+    instalableRef.current = false;
+    setInstalable(false);
+    usarMotor(listo ? 'navegador' : 'whisper');
+  }
+
+  // Clic en Cargar MP3: si falta instalar el castellano del navegador, se arranca
+  // ahora (Chrome puede exigir un gesto) y se abre el selector sin esperar
+  function onClickMp3() {
+    if (motorRef.current === 'whisper' && instalableRef.current && !instalacionRef.current) {
+      instalacionRef.current = prepararDictadoNavegador();
+    }
+    inputMp3Ref.current?.click();
+  }
+
   // Cargar MP3: abre el selector del equipo; el archivo se lee localmente
   async function onSeleccionarMp3(event: React.ChangeEvent<HTMLInputElement>) {
     const archivo = event.target.files?.[0];
@@ -272,6 +310,15 @@ export default function ReportPanel({ reportService }) {
       limpiarErrorAudio();
       setErrorAudio('Seleccione un archivo .mp3');
       return;
+    }
+    // La instalacion del castellano la arranco el clic en Cargar MP3 (con gesto del
+    // usuario) mientras se elegia el archivo
+    if (instalacionRef.current) {
+      setEstadoAudio('Instalando el castellano del navegador (solo la primera vez)...');
+      const listo = await instalacionRef.current;
+      instalacionRef.current = null;
+      setEstadoAudio('');
+      terminoInstalacion(listo);
     }
     if (motorRef.current === 'navegador') {
       await procesarConNavegador(archivo);
@@ -400,9 +447,8 @@ export default function ReportPanel({ reportService }) {
       const listo = await prepararDictadoNavegador();
       setEstadoAudio('');
       instalableRef.current = false;
-      if (listo) {
-        usarMotor('navegador');
-      }
+      setInstalable(false);
+      usarMotor(listo ? 'navegador' : 'whisper'); // si fallo, recien ahora se carga Whisper
     }
     if (motorRef.current === 'navegador') {
       onClickMicrofonoNavegador();
@@ -494,7 +540,7 @@ export default function ReportPanel({ reportService }) {
         <Button
           className="shrink-0 whitespace-nowrap"
           variant="secondary"
-          onClick={() => inputMp3Ref.current?.click()}
+          onClick={onClickMp3}
           disabled={grabando || procesando || enviando || pendientes > 0 || preparando}
         >
           🎵 Cargar MP3
@@ -531,6 +577,16 @@ export default function ReportPanel({ reportService }) {
           {dictado?.fase === 'precalentando'
             ? 'Preparando el dictado... casi listo'
             : `Preparando el dictado... ${dictado?.porcentaje ?? 0} %`}
+        </p>
+      )}
+      {preparando === false && motor === 'whisper' && dictado?.fase === 'precalentando' && dictado.demorado && (
+        <p className="text-muted-foreground text-xs">
+          Dictado casi listo: la primera frase puede demorar un poco más (se termina de preparar la placa de video)
+        </p>
+      )}
+      {motor === 'whisper' && instalable && !estadoAudio && !errorAudio && (
+        <p className="text-muted-foreground text-xs">
+          Dictado listo: al apretar Grabar voz o Cargar MP3 se instala el castellano del navegador (solo la primera vez)
         </p>
       )}
       {motor === 'navegador' && !estadoAudio && !errorAudio && (

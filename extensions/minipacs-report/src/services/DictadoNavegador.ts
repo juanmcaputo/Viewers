@@ -30,6 +30,8 @@ export async function estadoDictadoNavegador(): Promise<string> {
 // Chrome puede pedir un clic del usuario para instalar: por eso el panel lo
 // reintenta al apretar Grabar voz si al iniciar OHIF no se pudo.
 let instalando: Promise<boolean> | null = null;
+// La instalacion que ya esta en marcha (ej. la de index.ts al iniciar), si hay
+export const instalacionEnCurso = (): Promise<boolean> | null => instalando;
 export function prepararDictadoNavegador(): Promise<boolean> {
   if (!instalando) {
     instalando = (async () => {

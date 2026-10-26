@@ -2,8 +2,6 @@ import getPanelModule from './getPanelModule';
 import getCommandsModule from './getCommandsModule';
 import getSopClassHandlerModule from './getSopClassHandlerModule';
 import getViewportModule from './getViewportModule';
-import { precargarModelo } from './services/SpeechTranscriber';
-import { obtenerModelo as obtenerSilero } from './services/DetectorVoz';
 import { prepararDictadoNavegador } from './services/DictadoNavegador';
 import { registro } from './services/registroVoz';
 
@@ -13,26 +11,23 @@ const version = '0.1.0';
 export default {
   id,
   version,
-  // Al iniciar OHIF: empezar a preparar el dictado (elegir modelo, cargarlo y
-  // precalentarlo) en su hilo aparte, en paralelo con la carga de la pagina.
-  // Cuando el medico abre el panel de informe ya esta listo.
+  // Al iniciar OHIF: SOLO intentar tener listo el castellano local del navegador
+  // (Chrome 155+, escribe mientras se habla). Whisper NO se carga aca: bajar los
+  // modelos (decenas de MB por la misma conexion que las imagenes) y compilar los
+  // programas de la placa de video compiten con la carga del visor (visor negro,
+  // frames lentisimos) y ademas OHIF se recarga varias veces al iniciar sesion.
+  //  - Chrome con la API local: si el paquete de idioma no esta, se intenta
+  //    instalar sin molestar; si Chrome exige un clic (o tarda), se instala al
+  //    apretar Grabar voz / Cargar MP3 y Whisper ni se carga.
+  //  - Navegador sin la API (Edge, Firefox, Chrome viejo): Whisper (y Silero) se
+  //    preparan cuando el medico abre el panel de informe (ReportPanel.tsx).
   preRegistration() {
-    // 1. Si el navegador reconoce castellano LOCALMENTE (Chrome 155+), ese es el
-    //    motor: escribe mientras se habla. Si falta el paquete de idioma, se
-    //    instala en segundo plano (si Chrome pide un clic, se reintenta al
-    //    apretar Grabar voz). En ese caso Whisper no se carga: ahorra memoria.
-    // 2. Si no (Edge, Firefox, Chrome viejo o fallo la instalacion): Whisper y
-    //    Silero, precargados en paralelo con la carga de OHIF.
     prepararDictadoNavegador().then(listo => {
-      if (listo) {
-        registro('dictado: se usa el reconocimiento local del navegador');
-        return;
-      }
-      precargarModelo();
-      // Silero (deteccion de voz) corre en la pagina: se carga cuando el navegador
-      // esta libre, para no competir con la carga de OHIF
-      const cuandoEsteLibre = (window as any).requestIdleCallback || ((tarea: () => void) => setTimeout(tarea, 3000));
-      cuandoEsteLibre(() => obtenerSilero().catch(() => undefined), { timeout: 15000 });
+      registro(
+        listo
+          ? 'dictado: se usa el reconocimiento local del navegador'
+          : 'dictado: el motor se prepara al abrir el panel de informe o al dictar'
+      );
     });
   },
   getPanelModule,
