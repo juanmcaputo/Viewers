@@ -35,3 +35,22 @@ dockerfile
 coverage/
 platform/docs/
 testdata/
+
+# MiniPACS: modelos de transcripcion que NO deben entrar en la imagen
+# (conversiones descartadas y modelos grandes que no se usan). Si entran los
+# whisper-tiny, whisper-base (encoder fp32 + decoder q4), silero-vad, ort/ y worklet/.
+extensions/minipacs-report/public/minipacs/models/minipacs/whisper-base-es/
+extensions/minipacs-report/public/minipacs/models/minipacs/whisper-base-es-hitz/
+extensions/minipacs-report/public/minipacs/models/onnx-community/whisper-small/
+extensions/minipacs-report/public/minipacs/models/onnx-community/whisper-large-v3-turbo/
+extensions/minipacs-report/public/minipacs/models/onnx-community/whisper-base/onnx/encoder_model_fp16.onnx
+
+# Cache de Nx del equipo de desarrollo (ignorada por git): contiene comandos viejos
+# ("bun run ...") y rompia el build dentro del contenedor. Nx la regenera sola.
+.nx/
+
+# Nx elige el gestor de paquetes por el lockfile que encuentra: con bun.lock presente
+# ejecutaba los scripts con "bun run" (que no esta instalado). Este build usa yarn.lock.
+bun.lock
+bunfig.toml
+bunfig.update-lockfile.toml

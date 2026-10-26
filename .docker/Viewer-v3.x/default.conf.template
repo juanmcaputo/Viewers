@@ -14,6 +14,13 @@ server {
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;
   }
+  # Los .mjs (p. ej. /minipacs/ort/*.mjs, que se cargan con import()) requieren MIME
+  # de JavaScript y mime.types de nginx no trae .mjs: se sirven con default_type.
+  location ~* \.mjs$ {
+    root   /usr/share/nginx/html;
+    default_type text/javascript;
+    add_header Cross-Origin-Resource-Policy same-origin;
+  }
   error_page   500 502 503 504  /50x.html;
   location = /50x.html {
     root   /usr/share/nginx/html;
