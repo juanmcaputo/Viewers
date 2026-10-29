@@ -35,16 +35,20 @@ const NotFoundStudy = () => {
   const [appConfig] = useAppConfig();
   const { showStudyList } = appConfig;
 
+  // MiniPACS: textos en castellano. Sin lista (paciente) se llega aca si pide un estudio que no es el suyo:
+  // el servicio de pase contesta la busqueda vacia.
   return (
     <div className="absolute flex h-full w-full items-center justify-center text-white">
       <div>
         <h4>
-          One or more of the requested studies are not available at this time.
+          {showStudyList ? 'El estudio pedido no está disponible.' : 'Este estudio no está disponible.'}
         </h4>
-        {showStudyList && (
+        {showStudyList ? (
           <p className="mt-2">
-            Return to the <Link className="text-primary-light" to="/">study list</Link> to select a different study to view.
+            Volvé a la <Link className="text-primary-light" to="/">lista de estudios</Link> para elegir otro.
           </p>
+        ) : (
+          <p className="mt-2">Volvé al portal y apretá «Ver estudio».</p>
         )}
       </div>
     </div>

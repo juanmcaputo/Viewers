@@ -79,6 +79,9 @@
       "packageName": "@ohif/mode-basic"
     },
     {
+      "packageName": "@minipacs/mode-paciente"
+    },
+    {
       "packageName": "@ohif/mode-segmentation"
     },
     {

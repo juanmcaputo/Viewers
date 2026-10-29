@@ -1,0 +1,47 @@
+{
+  "name": "@minipacs/mode-paciente",
+  "version": "0.1.0",
+  "description": "MiniPACS: visor del paciente (barra reducida, sin informe ni lista de mediciones)",
+  "author": "MiniPACS",
+  "license": "MIT",
+  "private": true,
+  "main": "dist/minipacs-mode-paciente.js",
+  "module": "src/index.tsx",
+  "engines": {
+    "node": ">=14",
+    "npm": ">=6",
+    "yarn": ">=1.16.0"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "keywords": [
+    "ohif-mode"
+  ],
+  "scripts": {
+    "clean": "shx rm -rf dist",
+    "build": "cross-env NODE_ENV=production webpack --config .webpack/webpack.prod.js",
+    "build:package": "yarn run build"
+  },
+  "peerDependencies": {
+    "@minipacs/extension-report": "0.1.0",
+    "@ohif/core": "3.12.17",
+    "@ohif/extension-cornerstone": "3.12.17",
+    "@ohif/extension-cornerstone-dicom-rt": "3.12.17",
+    "@ohif/extension-cornerstone-dicom-seg": "3.12.17",
+    "@ohif/extension-cornerstone-dicom-sr": "3.12.17",
+    "@ohif/extension-default": "3.12.17",
+    "@ohif/extension-dicom-pdf": "3.12.17",
+    "@ohif/extension-dicom-video": "3.12.17",
+    "@ohif/mode-basic": "3.12.17",
+    "@ohif/ui-next": "3.12.17"
+  },
+  "dependencies": {
+    "@babel/runtime": "7.28.2"
+  },
+  "devDependencies": {
+    "webpack": "5.105.0",
+    "webpack-merge": "5.10.0"
+  }
+}
