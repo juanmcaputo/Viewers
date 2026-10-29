@@ -8,6 +8,8 @@ window.config = {
   extensions: [],
   modes: [],
   showStudyList: true,
+  // Sin el cartel "for investigational use only" de OHIF (abajo, sobre el visor).
+  investigationalUseDialog: { option: 'never' },
   // Mientras se consulta la lista se muestra el indicador de carga y no el
   // cartel "No studies" (que queda solo para consulta terminada y vacia).
   showLoadingIndicator: true,

@@ -17,7 +17,7 @@ export class ReportService {
     const dataset = generarTID2005({
       texto,
       estudio: datosDelEstudio(StudyInstanceUID),
-      medicoAutor: this.medicoAutor(),
+      medicoAutor: await this.medicoAutor(),
     });
 
     await this.enviarYRefrescar(dataset, StudyInstanceUID);
@@ -49,16 +49,24 @@ export class ReportService {
     DicomMetadataStore.addInstances([naturalizeDataset(denaturalizeDataset(sinMeta))], true);
   }
 
-  // El usuario logueado en Keycloak (lo guarda OHIF al iniciar sesion)
-  private medicoAutor(): string {
+  // El medico: el usuario logueado en Keycloak (lo guarda OHIF al iniciar sesion) o, si entro desde el
+  // portal por el servicio de pase (sin Keycloak), el nombre que da GET /pase/yo (SERVICIO_PASE.md, seccion 3)
+  private async medicoAutor(): Promise<string> {
     const perfil = this.servicesManager.services.userAuthenticationService.getUser()?.profile;
     if (perfil?.family_name) {
       return `${perfil.family_name}^${perfil.given_name ?? ''}`;
     }
     const nombre = perfil?.name ?? perfil?.preferred_username;
-    if (!nombre) {
-      throw new Error('No se pudo identificar al médico: volvé a iniciar sesión');
+    if (nombre) {
+      return nombre;
     }
-    return nombre;
+    const respuesta = await fetch('/pase/yo', { credentials: 'same-origin' });
+    if (respuesta.ok) {
+      const { nombre: dado, apellido } = await respuesta.json();
+      if (apellido) {
+        return `${apellido}^${dado ?? ''}`;
+      }
+    }
+    throw new Error('No se pudo identificar al médico: volvé a iniciar sesión');
   }
 }
