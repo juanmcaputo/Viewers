@@ -18,8 +18,9 @@
  * URL: /paciente?StudyInstanceUIDs=<uid>. Oculto en la lista de estudios (hide: true): a los
  * profesionales no les aparece; el paciente llega con el link del portal.
  *
- * La SEGURIDAD no esta aca: esconder botones no impide pedir datos. Que el paciente solo vea sus
- * estudios lo garantiza la pasarela DICOMweb (Documentacion, pendiente).
+ * La SEGURIDAD no esta aca: esconder botones no impide pedir datos. Que el paciente solo vea el
+ * estudio que abrio desde el portal lo garantiza el servicio de pase, que filtra cada pedido
+ * DICOMweb (Documentacion/SERVICIO_PASE/SERVICIO_PASE.md del repo principal).
  */
 import { Icons } from '@ohif/ui-next';
 import { defaults, ToolbarService } from '@ohif/core';
