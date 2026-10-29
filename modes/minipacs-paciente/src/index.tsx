@@ -6,6 +6,9 @@
  *   - la barra: zoom +/-, zoom, mover, longitud, angulo, guardar imagen, negativo, rotar y reset;
  *   - la pantalla: miniaturas de series a la izquierda y NADA a la derecha (sin el panel de
  *     informe, sin lista de mediciones: las mediciones se dibujan pero no hay como guardarlas);
+ *   - ningun camino a la lista de estudios: sin la flecha de volver ni el clic en el logo (prop
+ *     isReturnEnabled del layout) y, si el estudio no esta, el cartel le dice que vuelva al portal
+ *     (marca de pestania, ver MARCA_PESTANIA_PACIENTE);
  *   - los atajos de teclado: solo los de esas herramientas (los de OHIF incluyen segmentacion,
  *     ventana/nivel, etc.);
  *   - el boton izquierdo del mouse: en el basic es ventana/nivel (brillo/contraste); aca es "Mover"
@@ -138,13 +141,37 @@ export const atajosPaciente = defaults.hotkeyBindings.filter(
 const GRUPOS_CON_VENTANA_NIVEL = ['default', 'SRToolGroup', 'mpr'];
 
 /**
+ * Marca "esta pestania es de un paciente" en sessionStorage. La leen las paginas de error de
+ * platform/app (NotFoundStudy en routes/index.tsx y NotFound): con la marca no muestran el link a la
+ * lista de estudios y le dicen al paciente que vuelva al portal. Hace falta porque esas paginas ya no
+ * estan dentro del modo (OHIF sale del modo al navegar a /notfoundstudy) y la puerta del pase tiene
+ * showStudyList: true por el medico. Por que sessionStorage: es por pestania (el medico en otra
+ * ventana no la ve), sobrevive a F5 en /notfoundstudy y no depende de que OHIF pase datos al navegar.
+ * No se borra al salir del modo: si en la misma pestania se abriera despues /viewer, sus paginas de
+ * error tambien dirian "volve al portal" (la barra del medico no cambia: esa sale de la prop del layout).
+ */
+export const MARCA_PESTANIA_PACIENTE = 'minipacs.pestaniaPaciente';
+
+function marcarPestaniaPaciente() {
+  try {
+    window.sessionStorage.setItem(MARCA_PESTANIA_PACIENTE, '1');
+  } catch (e) {
+    // Sin sessionStorage (navegador que lo bloquea): las paginas de error usan el texto por defecto.
+    console.warn('MiniPACS: no se pudo marcar la pestania del paciente', e);
+  }
+}
+
+/**
  * Al entrar: lo mismo que el basic (grupos de herramientas y barra, que toma de this.toolbarButtons
  * y this.toolbarSections, o sea los de este modo), despues:
  *   - boton izquierdo = Mover (en el basic es ventana/nivel, que el paciente no tiene);
  *   - atajos reducidos. OHIF aplica 'ohif.hotkeyBindings' DESPUES de onModeEnter (Mode.tsx) y la
- *     personalizacion es de alcance "Mode": al salir del modo se descarta.
+ *     personalizacion es de alcance "Mode": al salir del modo se descarta;
+ *   - la marca de pestania del paciente (para las paginas de error, ver MARCA_PESTANIA_PACIENTE).
+ *     Se pone antes de que conteste la busqueda del estudio, que es la que manda a /notfoundstudy.
  */
 function onModeEnter(args) {
+  marcarPestaniaPaciente();
   basicOnModeEnter.call(this, args);
   const { servicesManager, extensionManager } = args;
   const { customizationService, toolGroupService } = servicesManager.services;
@@ -197,6 +224,9 @@ export const layoutPaciente = {
   ...basicLayout,
   props: {
     ...basicLayout.props,
+    // Sin la flecha de volver a la lista de estudios ni el clic en el logo (ViewerLayout de
+    // extension-default). Hace falta porque la puerta del pase tiene showStudyList: true para el medico.
+    isReturnEnabled: false,
     rightPanels: [],
     rightPanelClosed: true,
     viewports: [

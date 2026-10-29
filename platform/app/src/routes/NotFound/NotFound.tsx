@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { Button, Icons } from '@ohif/ui-next';
 import { useAppConfig } from '@state';
+import { esPestaniaPaciente } from '../../utils/esPestaniaPaciente';
 
 const NotFound = ({
   message = "We can't find the page you're looking for.",
@@ -22,7 +23,8 @@ const NotFound = ({
         <div className="bg-muted flex flex-col items-center justify-center rounded-b-2xl p-8 text-center">
           <h1 className="text-foreground text-[22px] font-light">Error (404)</h1>
           <p className="text-muted-foreground mt-1 text-[16px] font-light">{message}</p>
-          {showGoBackButton && showStudyList && (
+          {/* MiniPACS: sin el boton a la lista en la pestania de un paciente (utils/esPestaniaPaciente.ts) */}
+          {showGoBackButton && showStudyList && !esPestaniaPaciente() && (
             <Button
               className="mt-8 px-3 text-lg"
               onClick={() => navigate('/')}

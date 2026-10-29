@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { ErrorBoundary, LoadingIndicatorProgress } from '@ohif/ui-next';
 
 // Route Components
@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import { routerBasename } from '../utils/publicUrl';
 import { useAppConfig } from '@state';
 import { history } from '../utils/history';
+import { esPestaniaPaciente } from '../utils/esPestaniaPaciente';
 
 const NotFoundServer = ({
   message = 'Unable to query for studies at this time. Check your data source configuration or network connection',
@@ -33,17 +34,37 @@ NotFoundServer.propTypes = {
 
 const NotFoundStudy = () => {
   const [appConfig] = useAppConfig();
-  const { showStudyList } = appConfig;
+  const { search } = useLocation();
+  const parametros = new URLSearchParams(search);
+  // MiniPACS: ?paciente=1 y ?sinservicio=1 los pone la config de la puerta del pase
+  // (deploy-*/app-config-pase.js): antes de abrir cualquier pantalla que no sea del paciente pregunta
+  // GET /pase/yo; si no es un medico (403 paciente, 401 sin sesion) manda aca con ?paciente=1, y si
+  // el servicio no contesta, con ?sinservicio=1.
+  if (parametros.get('sinservicio') === '1') {
+    return (
+      <div className="absolute flex h-full w-full items-center justify-center text-white">
+        <div>
+          <h4>No se pudo verificar el acceso.</h4>
+          <p className="mt-2">Probá de nuevo en unos minutos.</p>
+        </div>
+      </div>
+    );
+  }
+  // MiniPACS: el link a la lista solo si hay lista Y no es un paciente. En la puerta del pase
+  // showStudyList es true (por el medico), asi que al paciente lo distingue ?paciente=1 o la marca
+  // que deja su modo al entrar (utils/esPestaniaPaciente.ts).
+  const conLista =
+    !!appConfig.showStudyList && parametros.get('paciente') !== '1' && !esPestaniaPaciente();
 
-  // MiniPACS: textos en castellano. Sin lista (paciente) se llega aca si pide un estudio que no es el suyo:
-  // el servicio de pase contesta la busqueda vacia.
+  // MiniPACS: textos en castellano. El paciente llega aca si pide un estudio que no es el suyo
+  // (el servicio de pase contesta la busqueda vacia) o si abre una pantalla que no es la suya.
   return (
     <div className="absolute flex h-full w-full items-center justify-center text-white">
       <div>
         <h4>
-          {showStudyList ? 'El estudio pedido no está disponible.' : 'Este estudio no está disponible.'}
+          {conLista ? 'El estudio pedido no está disponible.' : 'Este estudio no está disponible.'}
         </h4>
-        {showStudyList ? (
+        {conLista ? (
           <p className="mt-2">
             Volvé a la <Link className="text-primary-light" to="/">lista de estudios</Link> para elegir otro.
           </p>

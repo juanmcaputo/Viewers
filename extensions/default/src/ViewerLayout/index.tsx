@@ -28,6 +28,11 @@ function ViewerLayout({
   rightPanelInitialExpandedWidth,
   leftPanelMinimumExpandedWidth,
   rightPanelMinimumExpandedWidth,
+  // MiniPACS: un modo puede apagar desde su layout (layoutInstance.props) la flecha de volver a la
+  // lista de estudios y el clic en el logo, aunque la config tenga showStudyList: true. Lo usa el
+  // modo del paciente: la puerta del pase tiene una sola config para paciente y medico, y el medico
+  // necesita la lista. Por defecto true: los demas modos quedan como en OHIF.
+  isReturnEnabled = true,
 }: withAppTypes): React.FunctionComponent {
   const [appConfig] = useAppConfig();
 
@@ -156,6 +161,7 @@ function ViewerLayout({
         extensionManager={extensionManager}
         servicesManager={servicesManager}
         appConfig={appConfig}
+        isReturnEnabled={isReturnEnabled}
       />
       <div
         className="relative flex w-full flex-row flex-nowrap items-stretch overflow-hidden bg-black"
@@ -238,6 +244,7 @@ ViewerLayout.propTypes = {
   /** Responsible for rendering our grid of viewports; provided by consuming application */
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.func]).isRequired,
   viewports: PropTypes.array,
+  isReturnEnabled: PropTypes.bool,
 };
 
 export default ViewerLayout;

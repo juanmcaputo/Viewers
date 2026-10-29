@@ -10,7 +10,10 @@ import { PatientInfoVisibility } from './HeaderPatientInfo/HeaderPatientInfo';
 import { preserveQueryParameters } from '@ohif/app';
 import { Types } from '@ohif/core';
 
-function ViewerHeader({ appConfig }: withAppTypes<{ appConfig: AppTypes.Config }>) {
+function ViewerHeader({
+  appConfig,
+  isReturnEnabled = true,
+}: withAppTypes<{ appConfig: AppTypes.Config; isReturnEnabled?: boolean }>) {
   const { servicesManager, extensionManager, commandsManager } = useSystem();
   const { customizationService } = servicesManager.services;
 
@@ -84,7 +87,9 @@ function ViewerHeader({ appConfig }: withAppTypes<{ appConfig: AppTypes.Config }
   return (
     <Header
       menuOptions={menuOptions}
-      isReturnEnabled={!!appConfig.showStudyList}
+      // MiniPACS: ademas de showStudyList, el modo puede apagarla (prop del layout, ver ViewerLayout).
+      // Apaga la flecha y el clic en el logo (Header los maneja juntos).
+      isReturnEnabled={!!appConfig.showStudyList && isReturnEnabled}
       onClickReturnButton={onClickReturnButton}
       WhiteLabeling={appConfig.whiteLabeling}
       Secondary={<Toolbar buttonSection="secondary" />}
