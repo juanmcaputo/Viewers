@@ -11,7 +11,7 @@ import NotFound from './NotFound';
 import buildModeRoutes from './buildModeRoutes';
 import PrivateRoute from './PrivateRoute';
 import PropTypes from 'prop-types';
-import { routerBasename } from '../utils/publicUrl';
+import { publicUrl, routerBasename } from '../utils/publicUrl';
 import { useAppConfig } from '@state';
 import { history } from '../utils/history';
 import { esPestaniaPaciente } from '../utils/esPestaniaPaciente';
@@ -57,20 +57,32 @@ const NotFoundStudy = () => {
     !!appConfig.showStudyList && parametros.get('paciente') !== '1' && !esPestaniaPaciente();
 
   // MiniPACS: textos en castellano. El paciente llega aca si pide un estudio que no es el suyo
-  // (el servicio de pase contesta la busqueda vacia) o si abre una pantalla que no es la suya.
+  // (el servicio de pase contesta la busqueda vacia) o si abre una pantalla que no es la suya: en los
+  // dos casos el mismo cartel, con la imagen public/assets/minipacs/prohibido.png.
+  if (!conLista) {
+    return (
+      <div className="absolute flex h-full w-full items-center justify-center text-white">
+        <div className="flex max-w-md flex-col items-center px-4 text-center">
+          <img
+            src={`${publicUrl}assets/minipacs/prohibido.png`}
+            alt="Prohibido"
+            className="mb-6 w-72 rounded-lg"
+          />
+          <h4 className="text-xl">Vista no permitida</h4>
+          <p className="mt-2">
+            Vuelva atrás o ingrese desde el portal del paciente para acceder nuevamente a sus estudios.
+          </p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="absolute flex h-full w-full items-center justify-center text-white">
       <div>
-        <h4>
-          {conLista ? 'El estudio pedido no está disponible.' : 'Este estudio no está disponible.'}
-        </h4>
-        {conLista ? (
-          <p className="mt-2">
-            Volvé a la <Link className="text-primary-light" to="/">lista de estudios</Link> para elegir otro.
-          </p>
-        ) : (
-          <p className="mt-2">Volvé al portal y apretá «Ver estudio».</p>
-        )}
+        <h4>El estudio pedido no está disponible.</h4>
+        <p className="mt-2">
+          Volvé a la <Link className="text-primary-light" to="/">lista de estudios</Link> para elegir otro.
+        </p>
       </div>
     </div>
   );
